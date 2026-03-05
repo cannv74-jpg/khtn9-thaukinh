@@ -3,526 +3,311 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hệ thống Trắc nghiệm KHTN 9 - Thấu kính</title>
+    <title>Game Trắc nghiệm: Công và Công suất - Mô hình 12-4-4</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    
-    <script>
-        window.MathJax = {
-            tex: {
-                inlineMath: [['$', '$'], ['\\(', '\\)']],
-                displayMath: [['$$', '$$'], ['\\[', '\\]']]
-            },
-            startup: { typeset: false }
-        };
-    </script>
-    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap');
-        
-        body { 
-            font-family: 'Roboto', sans-serif; 
-            background: radial-gradient(circle at center, #f8fafc 0%, #dbeafe 100%); 
-            height: 100vh;
-            margin: 0;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden; 
-        }
-
-        .gold-text { color: #d4af37; text-shadow: 2px 2px 4px rgba(0,0,0,0.2); }
-        
-        .card { 
-            background: white; 
-            border-radius: 2rem; 
-            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.15); 
-            border: 1px solid rgba(255,255,255,0.8); 
-        }
-
-        .btn-blue { background-color: #1e40af; color: white; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
-        .btn-blue:hover:not(:disabled) { 
-            background-color: #1e3a8a; 
-            transform: translateY(-2px); 
-            box-shadow: 0 10px 15px -3px rgba(30, 64, 175, 0.3); 
-        }
-
-        .timer-bar { transition: width 1s linear; }
-
-        .option-card { 
-            cursor: pointer; 
-            border: 2px solid #f1f5f9; 
-            transition: all 0.2s; 
-            border-radius: 1.25rem; 
-            background: #fff;
-        }
-        .option-card:hover { border-color: #3b82f6; background-color: #f0f9ff; transform: scale(1.01); }
-        .option-selected { border-color: #1e40af; background-color: #eff6ff; font-weight: bold; }
-
-        header { z-index: 100; }
-        
-        main {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: center; 
-            align-items: center;     
-            width: 100%;
-            padding: 1.5rem;
-            overflow-y: auto; 
-        }
-
-        .question-card-wrapper {
-            width: 100%;
-            max-width: 900px;
-            margin: auto;
-        }
-
-        .tf-btn {
-            padding: 8px 24px;
-            border-radius: 9999px;
-            border: 2px solid #e2e8f0;
-            font-weight: 800;
-            transition: all 0.2s;
-            text-transform: uppercase;
-        }
-        .tf-btn.selected-true { background-color: #22c55e; color: white; border-color: #16a34a; }
-        .tf-btn.selected-false { background-color: #ef4444; color: white; border-color: #dc2626; }
-
-        .animate-fade-in { animation: fadeIn 0.4s ease-in-out; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-        #review-container { width: 100%; max-width: 900px; }
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700;900&display=swap');
+        body { font-family: 'Roboto', sans-serif; background-color: #f1f5f9; color: #1e293b; font-size: 18px; }
+        .gradient-text-3d { background: linear-gradient(to bottom, #ffd700, #b8860b); -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(2px 2px 2px rgba(0,0,0,0.3)); font-weight: 900; }
+        .card { background: white; border-radius: 1.5rem; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); padding: 2.5rem; max-width: 850px; width: 95%; margin: auto; }
+        .option-card { border: 2px solid #e2e8f0; border-radius: 1rem; padding: 1rem; cursor: pointer; transition: all 0.2s; margin-bottom: 0.75rem; display: flex; align-items: center; }
+        .option-card:hover { border-color: #3b82f6; background-color: #f0f7ff; }
+        .option-card.selected { border-color: #1d4ed8; background-color: #eff6ff; box-shadow: inset 0 0 0 1px #1d4ed8; }
+        .tf-btn { width: 70px; height: 38px; border-radius: 0.5rem; font-weight: bold; border: 2px solid #e2e8f0; transition: all 0.2s; }
+        .tf-btn.true-active { background-color: #10b981; color: white; border-color: #059669; }
+        .tf-btn.false-active { background-color: #ef4444; color: white; border-color: #dc2626; }
+        .timer-progress { height: 100%; background: linear-gradient(to right, #3b82f6, #ef4444); transition: width 1s linear; }
+        .history-item { border-left: 6px solid #cbd5e1; padding: 1.5rem; margin-bottom: 2rem; background: #f8fafc; border-radius: 0 1rem 1rem 0; }
+        .correct-review { background-color: #dcfce7; border-color: #22c55e; color: #166534; font-weight: bold; padding: 0.75rem; border-radius: 0.75rem; margin-bottom: 0.5rem; border: 1px solid #22c55e; }
+        .incorrect-review { background-color: #fee2e2; border-color: #ef4444; color: #991b1b; padding: 0.75rem; border-radius: 0.75rem; margin-bottom: 0.5rem; border: 1px solid #ef4444; }
+        .explanation-box { background-color: #f0fdfa; border-top: 2px solid #5eead4; padding: 1rem; border-radius: 0 0 0.5rem 0.5rem; margin-top: 0.5rem; font-size: 0.95em; color: #134e4a; }
+        .review-opt { padding: 0.75rem; border-radius: 0.75rem; margin-bottom: 0.5rem; border: 1px solid #e2e8f0; display: flex; align-items: center; }
     </style>
 </head>
-<body id="main-body">
+<body class="flex flex-col min-h-screen">
+    <header id="user-info-bar" class="hidden bg-slate-900 text-white p-3 shadow-lg flex justify-between items-center sticky top-0 z-50">
+        <div id="display-name-sbd" class="font-bold"></div>
+        <div id="display-class-school" class="text-sm opacity-80"></div>
+    </header>
 
-    <!-- Screen: Login -->
-    <div id="screen-login" class="flex-1 flex flex-col items-center justify-center p-4 animate-fade-in">
-        <div class="w-full max-w-md">
-            <div class="text-center mb-8">
-                <div class="inline-block relative">
-                    <span class="text-7xl">🔭</span>
-                    <span class="absolute -top-2 -right-2 text-4xl animate-bounce">✨</span>
-                </div>
-                <h1 class="text-4xl font-black gold-text mt-4 italic uppercase tracking-tighter">Bài 8. Thấu kính</h1>
-                <p class="text-slate-500 font-bold uppercase text-[10px] tracking-[0.3em] mt-2">Hệ thống giáo dục v12.10</p>
+    <main class="flex-grow flex items-center justify-center p-4">
+        <!-- Screen: Login -->
+        <section id="login-screen" class="card text-center">
+            <h1 class="text-4xl font-black gradient-text-3d mb-2">CÔNG VÀ CÔNG SUẤT</h1>
+            <p class="text-slate-500 mb-8 font-medium">Ngân hàng 40 câu - Đề 20 câu (12-4-4)</p>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-left">
+                <input type="text" id="input-sbd" class="p-3 border-2 rounded-xl outline-none" placeholder="Số báo danh">
+                <input type="text" id="input-name" class="p-3 border-2 rounded-xl outline-none" placeholder="Họ và tên">
+                <input type="text" id="input-class" class="p-3 border-2 rounded-xl outline-none" placeholder="Lớp">
+                <input type="text" id="input-school" class="p-3 border-2 rounded-xl outline-none" placeholder="Trường">
             </div>
-            <div class="card p-10">
-                <div class="space-y-4">
-                    <input type="text" id="input-name" placeholder="Họ và tên..." class="w-full rounded-2xl border-slate-200 border-2 p-4 font-bold focus:border-blue-500 outline-none transition bg-slate-50">
-                    <input type="text" id="input-sbd" placeholder="Số báo danh..." class="w-full rounded-2xl border-slate-200 border-2 p-4 font-bold focus:border-blue-500 outline-none transition bg-slate-50">
-                    <div class="grid grid-cols-2 gap-4">
-                        <input type="text" id="input-class" placeholder="Lớp..." class="w-full rounded-2xl border-slate-200 border-2 p-4 font-bold focus:border-blue-500 outline-none transition bg-slate-50">
-                        <input type="text" id="input-school" placeholder="Trường..." class="w-full rounded-2xl border-slate-200 border-2 p-4 font-bold focus:border-blue-500 outline-none transition bg-slate-50">
-                    </div>
-                    <button id="btn-start-trigger" onclick="window.startGame()" class="w-full btn-blue py-5 rounded-2xl font-black text-xl mt-6 shadow-2xl uppercase tracking-widest active:scale-95 transition-transform">
-                        Bắt đầu thi <i class="fas fa-play ml-2"></i>
-                    </button>
+            <button onclick="startGame()" class="bg-blue-700 text-white w-full mt-8 py-4 rounded-xl text-xl font-bold shadow-lg hover:bg-blue-800 transition-all">BẮT ĐẦU THI</button>
+        </section>
+
+        <!-- Screen: Quiz -->
+        <section id="quiz-screen" class="hidden card w-full">
+            <div class="flex justify-between items-end mb-2">
+                <div>
+                    <span id="question-part" class="text-xs font-bold uppercase text-slate-400 block"></span>
+                    <span id="question-index" class="text-blue-700 font-black text-2xl">Câu 1</span>
                 </div>
-                <div class="mt-8 text-center border-t pt-6">
-                    <button onclick="window.showTeacherAuth()" class="text-slate-400 hover:text-blue-600 text-[10px] font-black transition uppercase tracking-widest">
-                        <i class="fas fa-shield-alt mr-1"></i> Khu vực quản trị
-                    </button>
-                </div>
+                <div id="timer-text" class="text-red-600 font-bold text-xl font-mono">90s</div>
             </div>
-        </div>
-    </div>
-
-    <!-- Screen: Game -->
-    <div id="screen-game" class="hidden flex-col h-screen animate-fade-in bg-slate-50">
-        <header class="bg-white p-4 border-b-2 border-slate-100 flex justify-between items-center shrink-0 shadow-sm px-6 sm:px-10">
-            <div id="student-info-display" class="font-black text-blue-900 text-base sm:text-lg uppercase tracking-tight truncate max-w-[200px] sm:max-w-md"></div>
-            <div class="flex items-center gap-4 sm:gap-8">
-                <div class="text-center">
-                    <span class="text-[6pt] sm:text-[7pt] font-black text-slate-300 uppercase tracking-widest block">Thời gian</span>
-                    <div id="timer-display" class="font-black text-xl sm:text-3xl text-red-600 font-mono leading-none mt-1">00s</div>
-                </div>
-                <div class="h-8 sm:h-10 w-0.5 bg-slate-200 rounded-full"></div>
-                <div class="text-center">
-                    <span class="text-[6pt] sm:text-[7pt] font-black text-slate-300 uppercase tracking-widest block">Câu hỏi</span>
-                    <div class="text-xl sm:text-2xl font-black leading-none mt-1 text-slate-800"><span id="q-progress" class="text-blue-600">1</span>/20</div>
-                </div>
+            <div class="h-2 bg-slate-100 rounded-full overflow-hidden mb-6"><div id="timer-progress" class="timer-progress w-full"></div></div>
+            <div id="question-content"></div>
+            <div class="flex justify-between items-center mt-10 border-t pt-6">
+                <button id="prev-btn" onclick="prevQuestion()" class="text-slate-400 font-bold hover:text-blue-600 hidden">Quay lại</button>
+                <div class="flex-grow"></div>
+                <button id="next-btn" onclick="nextQuestion()" class="bg-blue-700 text-white px-8 py-3 rounded-xl font-bold">Tiếp theo</button>
+                <button id="submit-btn" onclick="showConfirmation()" class="bg-green-600 text-white px-8 py-3 rounded-xl font-bold hidden">NỘP BÀI</button>
             </div>
-        </header>
+        </section>
 
-        <div class="w-full bg-slate-100 h-1 shrink-0">
-            <div id="timer-bar" class="h-full bg-blue-600 timer-bar w-full shadow-lg shadow-blue-200"></div>
-        </div>
+        <!-- Screen: Results -->
+        <section id="result-screen" class="hidden card text-center overflow-y-auto max-h-[90vh] w-full max-w-4xl">
+            <h2 class="text-3xl font-black text-slate-800 mb-6">KẾT QUẢ CHI TIẾT</h2>
+            <div class="text-6xl font-black text-blue-800" id="final-score">0.0</div>
+            <div id="rank-badge" class="mt-4 px-6 py-2 rounded-full text-white font-bold text-lg uppercase mx-auto w-max mb-8"></div>
+            <div id="review-section" class="text-left space-y-8 border-t pt-8"></div>
+            <button onclick="location.reload()" class="bg-blue-700 text-white w-full mt-10 py-4 rounded-xl text-xl font-bold">LÀM LẠI</button>
+        </section>
+    </main>
 
-        <main class="scroll-smooth">
-            <div class="question-card-wrapper">
-                <div id="question-container" class="card p-6 sm:p-10 min-h-[450px] flex flex-col justify-center relative">
-                    <!-- Dynamic Question content -->
-                </div>
+    <script>
+        function refreshMath() { renderMathInElement(document.body, { delimiters: [{left: '$$', right: '$$', display: true}, {left: '$', right: '$', display: false}], throwOnError: false }); }
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        function playSound(type) {
+            const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain();
+            osc.connect(gain); gain.connect(audioCtx.destination);
+            osc.frequency.setValueAtTime(type === 'bell' ? 880 : 523, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+            osc.start(); osc.stop(audioCtx.currentTime + 0.3);
+        }
 
-                <div class="flex justify-between w-full mt-8 mb-4">
-                    <button id="btn-back" onclick="window.prevQuestion()" class="px-6 sm:px-10 py-3 sm:py-4 bg-white text-slate-400 border-2 border-slate-100 rounded-2xl font-black hover:bg-slate-50 transition invisible">
-                        <i class="fas fa-arrow-left mr-2"></i> QUAY LẠI
-                    </button>
-                    <button id="btn-next" onclick="window.nextQuestion()" class="px-10 sm:px-16 py-3 sm:py-4 btn-blue rounded-2xl font-black shadow-xl text-lg sm:text-xl uppercase tracking-tighter hover:scale-105 active:scale-95 transition-all">
-                        TIẾP THEO <i class="fas fa-arrow-right ml-2"></i>
-                    </button>
-                </div>
-            </div>
-        </main>
-    </div>
-
-    <!-- Screen: Results -->
-    <div id="screen-results" class="hidden flex-col items-center p-8 min-h-screen overflow-y-auto animate-fade-in bg-slate-50">
-        <div class="w-full max-w-4xl py-10">
-            <div class="card p-10 text-center relative overflow-hidden mb-10">
-                <div class="absolute top-0 left-0 w-full h-3 bg-gradient-to-r from-blue-600 via-indigo-500 to-cyan-400"></div>
-                
-                <div id="save-status-container" class="mb-10 p-4 rounded-3xl border-2 hidden items-center justify-center gap-3 font-black text-sm">
-                    <i id="save-icon" class="fas fa-sync fa-spin"></i>
-                    <span id="save-status">Đang nộp bài...</span>
-                </div>
-
-                <h2 class="text-5xl font-black mb-4 text-slate-800 tracking-tighter uppercase" id="result-rank">XẾP LOẠI</h2>
-                <div class="text-8xl font-black text-blue-600 mb-10" id="total-score">0.0 / 7.0</div>
-                
-                <div class="grid grid-cols-3 gap-4 sm:gap-6 mb-12">
-                    <div class="p-6 bg-blue-50/50 rounded-[2rem] border border-blue-100">
-                        <div class="text-[7pt] text-blue-400 font-black uppercase mb-1">Phần I</div>
-                        <div id="score-p1" class="text-2xl font-black text-blue-800">0.0</div>
-                    </div>
-                    <div class="p-6 bg-indigo-50/50 rounded-[2rem] border border-indigo-100">
-                        <div class="text-[7pt] text-indigo-400 font-black uppercase mb-1">Phần II</div>
-                        <div id="score-p2" class="text-2xl font-black text-indigo-800">0.0</div>
-                    </div>
-                    <div class="p-6 bg-purple-50/50 rounded-[2rem] border border-purple-100">
-                        <div class="text-[7pt] text-purple-400 font-black uppercase mb-1">Phần III</div>
-                        <div id="score-p3" class="text-2xl font-black text-purple-800">0.0</div>
-                    </div>
-                </div>
-
-                <div class="flex flex-col sm:flex-row gap-4 max-w-xl mx-auto">
-                    <button onclick="window.showReview()" class="flex-1 py-4 bg-slate-900 text-white font-black rounded-2xl shadow-lg transition uppercase text-sm tracking-widest">Xem lời giải</button>
-                    <button onclick="window.restartGame()" class="flex-1 py-4 bg-white border-2 border-slate-200 text-slate-600 font-black rounded-2xl hover:bg-slate-50 transition uppercase text-sm tracking-widest">Đề khác</button>
-                </div>
-            </div>
-
-            <div id="review-container" class="space-y-8 hidden"></div>
-        </div>
-    </div>
-
-    <!-- Admin screens (Auth/Dashboard) -->
-    <div id="screen-teacher-auth" class="hidden flex-col items-center justify-center h-screen animate-fade-in">
-        <div class="bg-white p-12 rounded-[3.5rem] shadow-2xl w-full max-w-md text-center">
-            <h2 class="text-3xl font-black text-slate-800 mb-8 tracking-tighter uppercase">Quản trị</h2>
-            <input type="password" id="secret-code" class="w-full border-2 border-slate-100 rounded-2xl p-5 mb-8 text-center text-3xl tracking-[0.5em] focus:border-blue-600 outline-none bg-slate-50" placeholder="••••••">
-            <button onclick="window.checkTeacherCode()" class="w-full bg-blue-600 text-white font-black py-5 rounded-2xl shadow-xl uppercase hover:scale-105 active:scale-95 transition">Vào hệ thống</button>
-            <button onclick="window.backToStudentLogin()" class="mt-4 text-slate-400 font-bold block w-full text-center hover:text-slate-800 transition">Hủy</button>
-        </div>
-    </div>
-
-    <div id="screen-dashboard" class="hidden flex-col h-screen bg-slate-50 overflow-y-auto animate-fade-in">
-        <div class="w-full max-w-7xl mx-auto py-12 px-6">
-            <div class="card overflow-hidden">
-                <div class="bg-blue-900 p-8 text-white flex justify-between items-center">
-                    <div>
-                        <h1 class="text-2xl font-black uppercase tracking-tighter">Bảng điểm Firestore</h1>
-                        <p class="text-blue-300 text-[10px] font-bold uppercase tracking-widest">v12.10.0 Real-time</p>
-                    </div>
-                    <div class="flex gap-4">
-                        <button onclick="window.exportCSV()" class="bg-emerald-500 hover:bg-emerald-600 text-white px-6 py-3 rounded-xl font-black shadow-lg transition flex items-center">
-                            <i class="fas fa-file-excel mr-2"></i> XUẤT EXCEL
-                        </button>
-                        <button onclick="window.backToStudentLogin()" class="bg-red-500 hover:bg-red-600 text-white px-8 py-3 rounded-xl font-black shadow-lg transition">
-                            THOÁT
-                        </button>
-                    </div>
-                </div>
-                <div class="p-8">
-                    <table class="w-full text-left border-separate border-spacing-y-2">
-                        <thead>
-                            <tr class="text-[10px] text-slate-400 uppercase tracking-widest font-black">
-                                <th class="p-4">Thời gian</th>
-                                <th class="p-4">SBD</th>
-                                <th class="p-4">Họ tên</th>
-                                <th class="p-4 text-center">Tổng điểm</th>
-                                <th class="p-4 text-center">Xóa</th>
-                            </tr>
-                        </thead>
-                        <tbody id="table-body"></tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <footer class="text-center text-[7pt] text-slate-400 font-black uppercase tracking-[0.3em] py-5 shrink-0 bg-white/50 border-t">
-        Bản quyền thuộc về Thạc sĩ Nguyễn Văn Cần, Thành phố Huế.
-    </footer>
-
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-app.js";
-        import { getFirestore, collection, addDoc, serverTimestamp, onSnapshot, doc, deleteDoc } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-firestore.js";
-        import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-auth.js";
-
-        const firebaseConfig = {
-            apiKey: "AIzaSyC4NJArIDAsEuqO5nLXpcIrmvyTF9bAUMg",
-            authDomain: "game-vat-ly-9.firebaseapp.com",
-            projectId: "game-vat-ly-9",
-            storageBucket: "game-vat-ly-9.firebasestorage.app",
-            messagingSenderId: "272270073188",
-            appId: "1:272270073188:web:1f3db3e62ba31c27e52e71",
-            measurementId: "G-P8VJ2YW5YD"
-        };
-
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
-        const auth = getAuth(app);
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'thau-kinh-9-v12';
-        const COLLECTION_NAME = 'results_khtn9_v12';
-        const SECRET_CODE = "Sangtao2026@";
-        let userAuth = null;
-
-        signInAnonymously(auth);
-        onAuthStateChanged(auth, u => userAuth = u);
-
-        const BANK = {
-            part1: [
-                { q: "Thấu kính hội tụ có đặc điểm cấu tạo nào sau đây?", a: ["Phần rìa dày hơn phần giữa.", "Phần rìa mỏng hơn phần giữa.", "Hai mặt đều phẳng.", "Làm từ kim loại mờ."], c: 1, explain: "TKHT có rìa mỏng hơn giữa. Đây là cấu trúc vật lí cho phép hội tụ chùm sáng." },
-                { q: "Tia tới song song với trục chính của thấu kính hội tụ cho tia ló đi qua", a: ["quang tâm O.", "tiêu điểm ảnh chính F'.", "trục phụ.", "điểm bất kì."], c: 1, explain: "Theo tính chất tia sáng đặc biệt qua TKHT." },
-                { q: "Vật thật đặt trước thấu kính phân kì luôn cho ảnh", a: ["ảo, cùng chiều, lớn hơn vật.", "ảo, cùng chiều, nhỏ hơn vật.", "thật, ngược chiều, nhỏ hơn vật.", "thật, cùng chiều, bằng vật."], c: 1, explain: "TKPK luôn cho ảnh ảo nhỏ hơn vật đối với vật thật." },
-                { q: "Số bội giác G của kính lúp ($f$ tính bằng cm) là", a: ["G = 25/f", "G = f/25", "G = 25.f", "G = 1/f"], c: 0, explain: "Công thức chuẩn tính số bội giác khi nhìn vật ở khoảng cực cận." },
-                { q: "Kính lão dùng cho mắt người già thực chất là", a: ["thấu kính hội tụ.", "thấu kính phân kì.", "gương cầu lồi.", "tấm kính phẳng."], c: 0, explain: "Giúp mắt lão hội tụ chùm sáng tại đúng võng mạc khi nhìn gần." },
-                { q: "Vật đặt tại $d = 2f$ trước thấu kính hội tụ thì ảnh thu được", a: ["thật, ngược chiều, bằng vật.", "ảo, cùng chiều, lớn hơn vật.", "thật, nhỏ hơn vật.", "ảo, nhỏ hơn vật."], c: 0, explain: "Đây là vị trí đặc biệt trong quang hình học." },
-                { q: "Tia sáng đi qua quang tâm O của mọi thấu kính mỏng thì", a: ["khúc xạ qua F.", "truyền thẳng không đổi hướng.", "phản xạ ngược lại.", "biến mất."], c: 1, explain: "Đặc điểm cơ bản của quang tâm O." },
-                { q: "Vật kính của máy ảnh dùng loại thấu kính nào?", a: ["Phân kì.", "Hội tụ.", "Gương phẳng.", "Lăng kính."], c: 1, explain: "Vật kính cần hội tụ ánh sáng từ vật lên phim/cảm biến." },
-                { q: "Khoảng cách từ quang tâm đến tiêu điểm chính gọi là", a: ["trục chính.", "tiêu cự.", "độ tụ.", "bán kính cong."], c: 1, explain: "Kí hiệu là f." },
-                { q: "Đơn vị chuẩn của tiêu cự trong hệ SI là", a: ["Newton.", "Mét.", "Pascal.", "Joule."], c: 1, explain: "Tiêu cự là độ dài nên đơn vị là mét." },
-                { q: "Khi quan sát vật bằng kính lúp, ta đặt vật", a: ["rất xa kính.", "ngoài khoảng tiêu cự.", "trong khoảng tiêu cự.", "tại đúng tiêu điểm ảnh."], c: 2, explain: "Để tạo ảnh ảo phóng đại cùng chiều." },
-                { q: "Hiện tượng thấu kính làm loe rộng chùm tia tới song song trục chính gọi là", a: ["hội tụ.", "phân kì.", "tán sắc.", "nhiễu xạ."], c: 1, explain: "Đây là tên gọi đặc trưng cho TKPK." },
-                { q: "Một kính lúp có $f = 5cm$. Số bội giác G của kính là", a: ["G = 2", "G = 5", "G = 10", "G = 25"], c: 1, explain: "G = 25 / 5 = 5." },
-                { q: "Ảnh thật tạo bởi thấu kính hội tụ luôn có tính chất", a: ["cùng chiều.", "ngược chiều.", "ảo.", "hội tụ tại O."], c: 1, explain: "Ảnh thật từ vật thật luôn ngược chiều." }
+        const bank = {
+            partI: [
+                { q: "Trường hợp nào sau đây có công cơ học?", options: ["Một người đang đứng yên giữ một vật nặng.", "Quả dừa rơi từ trên cây xuống đất.", "Hòn bi lăn trên mặt sàn nhẵn nằm ngang không ma sát.", "Một người đang ngồi học bài."], correct: 1, explain: "Công cơ học xuất hiện khi lực tác dụng làm vật dịch chuyển. Quả dừa rơi có lực trọng trường làm nó dịch chuyển nên có công." },
+                { q: "Trong hệ đo lường quốc tế (SI), đơn vị đo công cơ học là", options: ["Newton ($N$).", "Joule ($J$).", "Watt ($W$).", "Pascal ($Pa$)."], correct: 1, explain: "Joule ($J$) là đơn vị chuẩn của công và năng lượng." },
+                { q: "Đơn vị nào sau đây KHÔNG phải là đơn vị của công suất?", options: ["Watt ($W$).", "Kilowatt ($kW$).", "Joule trên giây ($J/s$).", "Kilogam ($kg$)."], correct: 3, explain: "Kilogam là đơn vị khối lượng." },
+                { q: "Công thức tính công cơ học khi lực $F$ tác dụng làm vật dịch chuyển quãng đường $s$ theo hướng của lực là", options: ["$A = F/s$", "$A = F \\cdot s$", "$A = s/F$", "$A = F \\cdot s^2$"], correct: 1, explain: "$A = F \\cdot s$ là công thức cơ bản." },
+                { q: "Công thức tính công suất là", options: ["$P = A \\cdot t$", "$P = A / t$", "$P = t / A$", "$P = F \\cdot s$"], correct: 1, explain: "Công suất đặc trưng cho tốc độ sinh công: $P = A/t$." },
+                { q: "Đơn vị nào sau đây là đơn vị đo công suất?", options: ["Joule ($J$).", "Watt ($W$).", "Newton ($N$).", "Mét ($m$)."], correct: 1, explain: "Watt ($W$) là đơn vị công suất phổ biến nhất." },
+                { q: "Một lực $F = 50\\ N$ tác dụng làm vật dịch chuyển $s = 2\\ m$ theo hướng của lực. Công của lực là", options: ["25 J.", "100 J.", "50 J.", "150 J."], correct: 1, explain: "$A = 50 \\cdot 2 = 100\\ J$." },
+                { q: "Công suất cho ta biết", options: ["Công thực hiện được nhiều hay ít.", "Khả năng thực hiện công nhanh hay chậm.", "Thời gian thực hiện công.", "Quãng đường vật dịch chuyển."], correct: 1, explain: "Công suất chính là tốc độ thực hiện công." },
+                { q: "Máy thực hiện công $12000\\ J$ trong $2$ phút. Công suất của máy là", options: ["$6000\\ W$.", "$100\\ W$.", "$24000\\ W$.", "$600\\ W$."], correct: 1, explain: "$t = 120\\ s \\Rightarrow P = 12000/120 = 100\\ W$." },
+                { q: "Nếu tăng lực tác dụng lên 2 lần và quãng đường tăng 3 lần thì công tăng", options: ["5 lần.", "6 lần.", "Không đổi.", "Giảm 6 lần."], correct: 1, explain: "$2 \\cdot 3 = 6$ lần." },
+                { q: "Trường hợp nào công suất lớn nhất?", options: ["50 N trong 20 s.", "50 N trong 10 s.", "100 N trong 20 s.", "100 N trong 40 s."], correct: 1, explain: "P tỉ lệ nghịch với t và thuận với F." },
+                { q: "Vật nặng $2\\ kg$ rơi từ cao $5\\ m$. Tính công trọng lực ($1\\ kg = 10\\ N$)", options: ["10 J.", "50 J.", "100 J.", "200 J."], correct: 2, explain: "$A = 20 \\cdot 5 = 100\\ J$." },
+                { q: "Đơn vị tương đương với $1\\ W$ là", options: ["$1\\ J \\cdot s$", "$1\\ J/s$", "$1\\ N \\cdot m$", "$1\\ Pa \\cdot s$"], correct: 1, explain: "$P = A/t \\Rightarrow 1\\ W = 1\\ J / 1\\ s$." },
+                { q: "Phát biểu nào đúng?", options: ["Công suất tỉ lệ thuận với thời gian.", "Công suất lớn thì thực hiện công nhiều.", "Công suất lớn thì thực hiện công nhanh.", "Đơn vị công là Joule."], correct: 2, explain: "Công suất đặc trưng cho tốc độ làm việc." },
+                { q: "Ngựa kéo xe lực $500\\ N$ đi được $1\\ km$. Công của ngựa là", options: ["500 J.", "50.000 J.", "500.000 J.", "5.000 J."], correct: 2, explain: "$A = 500 \\cdot 1000 = 500.000\\ J$." },
+                { q: "Máy thực hiện công $5000\\ J$ trong $5\\ s$. Công suất là", options: ["1000 W.", "25000 W.", "500 W.", "2500 W."], correct: 0, explain: "$P = 5000/5 = 1000\\ W$." },
+                { q: "Đổi $1,5\\ kW$ sang $W$:", options: ["15 W.", "150 W.", "1500 W.", "0,0015 W."], correct: 2, explain: "$1\\ kW = 1000\\ W$." },
+                { q: "Lực tác dụng nhưng KHÔNG sinh công khi", options: ["Vật chuyển động theo lực.", "Vật đứng yên.", "Vật chuyển động chậm.", "Lực rất lớn."], correct: 1, explain: "Dịch chuyển bằng 0 thì công bằng 0." },
+                { q: "Đẩy xe nhưng xe không nhúc nhích. Lực đẩy thực hiện công", options: ["Rất lớn.", "Bằng 0.", "Nhỏ.", "Âm."], correct: 1, explain: "$s=0$." },
+                { q: "Động cơ $2\\ kW$ trong $1$ giờ sinh công bao nhiêu?", options: ["$2\\ kJ$.", "$7,2\\ kJ$.", "$7200\\ kJ$.", "$2000\\ J$."], correct: 2, explain: "$A = 2000 \\cdot 3600 = 7.200.000\\ J = 7200\\ kJ$." },
+                { q: "Phát biểu SAI về công suất là", options: ["Công suất là công trong 1 giây.", "Công suất cho biết tốc độ sinh công.", "kW là đơn vị công suất.", "Công suất tỉ lệ nghịch với công."], correct: 3, explain: "P tỉ lệ thuận với A." },
+                { q: "Công lớn nhất khi nào?", options: ["Lực lớn, đường nhỏ.", "Lực nhỏ, đường lớn.", "Cả hai đều lớn.", "Lực vuông góc đường đi."], correct: 2, explain: "Tích số lớn nhất." },
+                { q: "Kí hiệu công và công suất lần lượt là", options: ["P và A.", "A và p.", "a và P.", "A và P."], correct: 3, explain: "Kí hiệu chuẩn: $A$ và $P$." },
+                { q: "Người $50\\ kg$ leo cao $4\\ m$ trong $10\\ s$. Công suất là", options: ["20 W.", "200 W.", "500 W.", "125 W."], correct: 1, explain: "$P = (500 \\cdot 4)/10 = 200\\ W$." }
             ],
-            part2: [
-                { lead: "Thấu kính hội tụ f = 15 cm. Vật AB đặt cách kính d = 10 cm. Chọn Đúng/Sai.", options: [{ text: "Thấu kính cho ảnh ảo cùng chiều vật.", type: true }, { text: "Ảnh thu được lớn hơn vật thật.", type: true }, { text: "Khoảng cách từ ảnh đến kính nhỏ hơn 10 cm.", type: false }, { text: "Nếu dời vật ra xa thêm 10 cm ảnh trở thành thật.", type: true }], explain: "d < f cho ảnh ảo phóng đại. Khi d=20 > f ảnh trở thành thật." },
-                { lead: "Xét thấu kính phân kì (TKPK) trong thí nghiệm.", options: [{ text: "Rìa thấu kính dày hơn phần giữa.", type: true }, { text: "Cho ảnh thật nếu vật rất gần kính.", type: false }, { text: "Tia ló của chùm tới song song loe rộng ra.", type: true }, { text: "Đường kéo dài tia ló song song trục đi qua F.", type: true }], explain: "TKPK luôn cho ảnh ảo và làm phân kì chùm sáng." }
+            partII: [
+                {
+                    q: "Vận động viên cử tạ nâng quả tạ $100\\ kg$ lên cao $2\\ m$ trong $2\\ s$. ($1\\ kg = 10\\ N$)",
+                    items: [
+                        { text: "Trọng lượng quả tạ là $1000\\ N$.", correct: true, reason: "$100 \\cdot 10 = 1000\\ N$." },
+                        { text: "Công thực hiện là $200\\ J$.", correct: false, reason: "Sai, $A = 1000 \\cdot 2 = 2000\\ J$." },
+                        { text: "Công suất là $1000\\ W$.", correct: true, reason: "$2000 / 2 = 1000\\ W$." },
+                        { text: "Giữ tạ đứng yên $5\\ s$ thì công sinh ra là $5000\\ J$.", correct: false, reason: "Đứng yên không sinh công." }
+                    ]
+                },
+                {
+                    q: "Xét các đặc điểm về đơn vị và công thức Công - Công suất.",
+                    items: [
+                        { text: "Công thức $A = F/s$ là đúng.", correct: false, reason: "Sai, phải là $F \\cdot s$." },
+                        { text: "1 kJ tương đương với 1000 J.", correct: true, reason: "Tiền tố k bằng 1000." },
+                        { text: "1 MW bằng 1 triệu W.", correct: true, reason: "Mega bằng $10^6$." },
+                        { text: "Watt là đơn vị của công.", correct: false, reason: "Watt là đơn vị công suất." }
+                    ]
+                },
+                {
+                    q: "Ô tô đang chạy trên đường nằm ngang.",
+                    items: [
+                        { text: "Động cơ đang thực hiện công để thắng lực cản.", correct: true, reason: "Lực kéo thắng ma sát." },
+                        { text: "Công suất không phụ thuộc vào tốc độ.", correct: false, reason: "P = F.v nên phụ thuộc tốc độ." },
+                        { text: "Trọng lực thực hiện công rất lớn.", correct: false, reason: "Trọng lực vuông góc hướng đi nên công bằng 0." },
+                        { text: "Xe chạy nhanh hơn với cùng lực kéo thì P tăng.", correct: true, reason: "Vận tốc tăng thì công suất tăng." }
+                    ]
+                },
+                {
+                    q: "Máy kéo công suất $10\\ kW$ làm việc trong $30$ phút.",
+                    items: [
+                        { text: "Công thực hiện là $300\\ kJ$.", correct: false, reason: "Sai, $10000 \\cdot 1800 = 18.000\\ kJ$." },
+                        { text: "Thời gian làm việc là $1800\\ s$.", correct: true, reason: "30 * 60 = 1800." },
+                        { text: "Máy $20\\ kW$ làm cùng công sẽ mất 15 phút.", correct: true, reason: "Công suất gấp đôi, thời gian chia đôi." },
+                        { text: "Công suất $10\\ kW$ nghĩa là mỗi giây sinh $10.000\\ J$.", correct: true, reason: "Định nghĩa W." }
+                    ]
+                },
+                {
+                    q: "Phân tích công của các lực tác dụng lên vật đang chuyển động ngang.",
+                    items: [
+                        { text: "Lực kéo sinh công phát động.", correct: true, reason: "Cùng chiều chuyển động." },
+                        { text: "Lực ma sát sinh công cản.", correct: true, reason: "Ngược chiều chuyển động." },
+                        { text: "Trọng lực không sinh công.", correct: true, reason: "Vuông góc phương chuyển động." },
+                        { text: "Tổng công luôn bằng 0.", correct: false, reason: "Phụ thuộc độ lớn các lực." }
+                    ]
+                },
+                {
+                    q: "Người kéo nước từ giếng sâu lên đều.",
+                    items: [
+                        { text: "Lực kéo của tay sinh công dương.", correct: true, reason: "Cùng chiều dịch chuyển gàu." },
+                        { text: "Trọng lực gàu sinh công âm.", correct: true, reason: "Ngược chiều dịch chuyển." },
+                        { text: "Lực kéo bằng trọng lượng gàu.", correct: true, reason: "Kéo đều." },
+                        { text: "Công suất kéo tăng dần.", correct: false, reason: "Kéo đều P không đổi." }
+                    ]
+                },
+                {
+                    q: "Các nhận định về công cơ học.",
+                    items: [
+                        { text: "Chỉ khi vật dịch chuyển mới có công.", correct: true, reason: "Định nghĩa công." },
+                        { text: "Lực vuông góc s vẫn có công.", correct: false, reason: "Cos 90 = 0." },
+                        { text: "Công có đơn vị là N.m.", correct: true, reason: "J = N.m." },
+                        { text: "Vật đứng yên dưới lực lớn vẫn có công.", correct: false, reason: "s=0." }
+                    ]
+                },
+                {
+                    q: "Máy nâng hàng có thông số 500 W.",
+                    items: [
+                        { text: "Máy nâng được 500 kg mỗi giây.", correct: false, reason: "W là đơn vị công suất, không phải khối lượng." },
+                        { text: "Mỗi giây máy làm việc sinh 500 J.", correct: true, reason: "Định nghĩa P." },
+                        { text: "Dùng máy 10 s sẽ tốn 5000 J.", correct: true, reason: "A = P.t." },
+                        { text: "Máy này yếu hơn máy 1 kW.", correct: true, reason: "0,5 kW < 1 kW." }
+                    ]
+                }
             ],
-            part3: [
-                { q: "Kính lúp ghi 10X. Tính tiêu cự của kính này (cm).", ans: "2,5", explain: "f = 25/10 = 2,5 cm." },
-                { q: "TKHT f=10cm. Vật tại d=20cm. Ảnh cách kính bao nhiêu cm?", ans: "20", explain: "d=2f => d'=2f=20cm." },
-                { q: "TKPK f=20cm. Vật tại d=20cm. Ảnh ảo cách kính bao nhiêu cm?", ans: "10", explain: "Vật tại F của TKPK cho ảnh tại f/2." },
-                { q: "Ghi số tiêu điểm chính của một thấu kính mỏng.", ans: "2", explain: "Có 2 tiêu điểm F và F'." }
+            partIII: [
+                { q: "Lực $500\\ N$ kéo vật đi $12\\ m$. Công là bao nhiêu $J$?", ans: "6000", explain: "$500 \\cdot 12 = 6000$." },
+                { q: "Máy thực hiện $30.000\\ J$ trong $100\\ s$. Công suất ($W$) là?", ans: "300", explain: "$30000/100 = 300$." },
+                { q: "Động cơ $1,5\\ kW$ sinh $450.000\\ J$. Đã làm việc trong mấy phút?", ans: "5", explain: "$450000/1500 = 300\\ s = 5$ phút." },
+                { q: "Ngựa kéo xe lực $200\\ N$ đi $500\\ m$ trong $100\\ s$. P là mấy $W$?", ans: "1000", explain: "$(200 \\cdot 500)/100 = 1000$." },
+                { q: "Nâng vật $20\\ kg$ cao $2\\ m$. Công sinh ra ($J$) là?", ans: "400", explain: "$200 \\cdot 2 = 400$." },
+                { q: "Cần mấy giây để máy $100\\ W$ sinh $600\\ J$?", ans: "6", explain: "$600/100 = 6$." },
+                { q: "Chọn nhận định ĐÚNG về P: 1. Đặc trưng cho độ mạnh; 2. Tốc độ sinh công; 3. Đơn vị Watt; 4. Tỉ lệ thuận thời gian. Đáp án là dãy số tăng dần.", ans: "23", explain: "2 và 3 đúng." },
+                { q: "Xếp thứ tự đơn vị tăng dần: 1. Watt; 2. kW; 3. MW; 4. mW. Dãy số là?", ans: "4123", explain: "mili < đơn vị < kilo < Mega." }
             ]
         };
 
-        const shuffleArray = (a) => {
-            for (let i = a.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [a[i], a[j]] = [a[j], a[i]];
-            }
-            return a;
-        };
+        let currentQuestions = []; let userAnswers = []; let currentIndex = 0; let timer; let timeRemaining = 0;
 
-        let currentQuestions = [], userAnswers = [], currentIndex = 0, timer = null, studentData = {};
+        function startGame() {
+            const name = document.getElementById('input-name').value; const sbd = document.getElementById('input-sbd').value;
+            if (!name || !sbd) return alert("Vui lòng nhập đầy đủ!");
+            document.getElementById('display-name-sbd').innerText = `${name.toUpperCase()} (SBD: ${sbd})`;
+            document.getElementById('display-class-school').innerText = `${document.getElementById('input-class').value} | ${document.getElementById('input-school').value}`;
+            document.getElementById('login-screen').classList.add('hidden'); document.getElementById('user-info-bar').classList.remove('hidden'); document.getElementById('quiz-screen').classList.remove('hidden');
+            initQuiz();
+        }
 
-        // ATTACH FUNCTIONS TO WINDOW
-        window.startGame = () => {
-            const name = document.getElementById('input-name').value.trim();
-            if(!name) { alert("Vui lòng nhập Họ tên!"); return; }
-            studentData = { name, sbd: document.getElementById('input-sbd').value || "000", class: document.getElementById('input-class').value || "9A", school: document.getElementById('input-school').value || "THCS" };
+        function initQuiz() {
+            const p1 = shuffle([...bank.partI]).slice(0, 12); const p2 = shuffle([...bank.partII]).slice(0, 4); const p3 = shuffle([...bank.partIII]).slice(0, 4);
+            currentQuestions = [...p1, ...p2, ...p3]; userAnswers = new Array(20).fill(null); currentIndex = 0; showQuestion();
+        }
 
-            const p1 = shuffleArray([...BANK.part1]).slice(0, 12).map(q => {
-                let options = q.a.map((txt, i) => ({ txt, isCorrect: i === q.c }));
-                options = shuffleArray(options); 
-                return { q: q.q, a: options.map(o => o.txt), c: options.findIndex(o => o.isCorrect), explain: q.explain, type: 'mc' };
-            });
-            const p2 = shuffleArray([...BANK.part2]).slice(0, 4).map(q => ({...q, options: shuffleArray([...q.options]), type: 'tf'}));
-            const p3 = shuffleArray([...BANK.part3]).slice(0, 4).map(q => ({...q, type: 'sa'}));
-            
-            currentQuestions = [...p1, ...p2, ...p3];
-            userAnswers = new Array(20).fill(null);
-            currentIndex = 0;
-
-            document.getElementById('screen-login').classList.add('hidden');
-            document.getElementById('screen-game').classList.remove('hidden');
-            document.getElementById('screen-game').classList.add('flex');
-            document.getElementById('student-info-display').innerText = `${studentData.name.toUpperCase()} | SBD: ${studentData.sbd} | ${studentData.class}`;
-            window.showQuestion();
-        };
-
-        window.showQuestion = () => {
-            const q = currentQuestions[currentIndex];
-            const container = document.getElementById('question-container');
-            let displayNum = 0, partText = "", timeLimit = 90;
-
-            if (currentIndex < 12) { displayNum = currentIndex + 1; partText = "Phần I. Đa lựa chọn (0.25đ)"; }
-            else if (currentIndex < 16) { displayNum = currentIndex - 11; partText = "Phần II. Đúng/Sai (Max 0.5đ)"; timeLimit = 120; }
-            else { displayNum = currentIndex - 15; partText = "Phần III. Trả lời ngắn (0,5đ)"; timeLimit = 120; }
-
-            document.getElementById('q-progress').innerText = currentIndex + 1;
-            
-            let html = `<div class="mb-2 text-[7pt] font-black uppercase text-blue-300 tracking-[0.2em]">${partText}</div>
-                        <div class="mb-6"><span class="bg-slate-900 text-white px-4 py-2 rounded-xl text-xs font-black shadow-lg">CÂU ${displayNum}</span></div>`;
-
-            if (q.type === 'mc') {
-                html += `<div class="text-xl sm:text-2xl font-bold mb-8 text-slate-800 leading-snug">${q.q}</div><div class="grid grid-cols-1 md:grid-cols-2 gap-4">`;
-                q.a.forEach((opt, i) => {
-                    const sel = userAnswers[currentIndex] === i ? 'option-selected' : '';
-                    html += `<div onclick="window.setMC(${i})" class="option-card p-4 sm:p-6 border-2 flex items-center gap-4 ${sel}">
-                                <span class="w-8 sm:w-10 h-8 sm:h-10 rounded-xl bg-slate-100 flex items-center justify-center font-black text-slate-400 border">${String.fromCharCode(65+i)}</span>
-                                <span class="text-base sm:text-lg font-medium">${opt}</span>
-                             </div>`;
-                });
-                html += `</div>`;
-            } else if (q.type === 'tf') {
-                html += `<div class="text-xl sm:text-2xl font-bold mb-8 text-slate-800">${q.lead}</div><div class="space-y-3">`;
-                const saved = userAnswers[currentIndex] || [null, null, null, null];
+        function showQuestion() {
+            const q = currentQuestions[currentIndex]; const content = document.getElementById('question-content');
+            document.getElementById('question-index').innerText = `Câu ${currentIndex + 1}`;
+            document.getElementById('question-part').innerText = currentIndex < 12 ? "Phần I: Đa lựa chọn" : (currentIndex < 16 ? "Phần II: Đúng/Sai" : "Phần III: Trả lời ngắn");
+            clearInterval(timer); timeRemaining = currentIndex < 12 ? 90 : 120; updateTimerUI();
+            timer = setInterval(() => { timeRemaining--; updateTimerUI(); if (timeRemaining <= 0) { clearInterval(timer); nextQuestion(); } }, 1000);
+            content.innerHTML = `<h3 class="text-xl font-bold mb-4">${q.q}</h3>`;
+            if (currentIndex < 12) {
                 q.options.forEach((opt, i) => {
-                    html += `<div class="flex items-center justify-between p-4 bg-slate-50 rounded-2xl border-2 border-white shadow-sm">
-                                <span class="text-base font-medium flex-1 mr-4"><b>${String.fromCharCode(97+i)})</b> ${opt.text}</span>
-                                <div class="flex gap-2">
-                                    <button onclick="window.setTF(${i}, true)" class="tf-btn ${saved[i]===true?'selected-true':'bg-white text-slate-300'}">Đúng</button>
-                                    <button onclick="window.setTF(${i}, false)" class="tf-btn ${saved[i]===false?'selected-false':'bg-white text-slate-300'}">Sai</button>
-                                </div>
-                             </div>`;
+                    const div = document.createElement('div'); div.className = `option-card ${userAnswers[currentIndex] === i ? 'selected' : ''}`;
+                    div.innerHTML = `<span class="bg-blue-100 text-blue-700 w-8 h-8 flex items-center justify-center rounded font-bold mr-3">${String.fromCharCode(65+i)}</span> <span>${opt}</span>`;
+                    div.onclick = () => { userAnswers[currentIndex] = i; playSound('ping'); showQuestion(); };
+                    content.appendChild(div);
                 });
-                html += `</div>`;
+            } else if (currentIndex < 16) {
+                if (!userAnswers[currentIndex]) userAnswers[currentIndex] = [null, null, null, null];
+                q.items.forEach((it, i) => {
+                    const row = document.createElement('div'); row.className = "mb-3 flex items-center justify-between p-3 bg-slate-50 rounded border";
+                    row.innerHTML = `<div class="text-base">${String.fromCharCode(97+i)}) ${it.text}</div><div class="flex space-x-2">
+                        <button class="tf-btn ${userAnswers[currentIndex][i]===true?'true-active':''}" onclick="selectTF(${i}, true)">Đ</button>
+                        <button class="tf-btn ${userAnswers[currentIndex][i]===false?'false-active':''}" onclick="selectTF(${i}, false)">S</button></div>`;
+                    content.appendChild(row);
+                });
             } else {
-                html += `<div class="text-2xl font-bold mb-10 text-center text-slate-800 leading-relaxed">${q.q}</div>
-                         <div class="flex flex-col items-center">
-                            <input type="text" maxlength="5" oninput="window.setSA(this.value)" value="${userAnswers[currentIndex]||''}" class="w-full max-w-sm p-6 border-b-8 border-blue-600 text-center text-6xl font-black focus:border-yellow-400 outline-none transition bg-transparent" placeholder="...">
-                         </div>`;
+                content.innerHTML += `<input type="text" id="sa" class="w-full p-3 border-2 rounded text-center text-xl font-bold" value="${userAnswers[currentIndex]||""}" oninput="userAnswers[currentIndex]=this.value">`;
+                setTimeout(() => document.getElementById('sa').focus(), 100);
             }
+            document.getElementById('prev-btn').classList.toggle('hidden', currentIndex === 0);
+            document.getElementById('next-btn').classList.toggle('hidden', currentIndex === 19);
+            document.getElementById('submit-btn').classList.toggle('hidden', currentIndex !== 19);
+            refreshMath();
+        }
 
-            container.innerHTML = html;
-            document.getElementById('btn-back').style.visibility = currentIndex === 0 ? 'hidden' : 'visible';
-            document.getElementById('btn-next').innerHTML = currentIndex === 19 ? 'NỘP BÀI <i class="fas fa-paper-plane ml-2"></i>' : 'TIẾP THEO <i class="fas fa-arrow-right ml-2"></i>';
-            
-            window.startTimer(timeLimit);
-            if (window.MathJax) MathJax.typesetPromise([container]);
-        };
+        function selectTF(i, v) { userAnswers[currentIndex][i] = v; playSound('ping'); showQuestion(); }
+        function nextQuestion() { if (currentIndex < 19) { currentIndex++; showQuestion(); } }
+        function prevQuestion() { if (currentIndex > 0) { currentIndex--; showQuestion(); } }
+        function updateTimerUI() { document.getElementById('timer-progress').style.width = `${(timeRemaining / (currentIndex < 12 ? 90 : 120)) * 100}%`; document.getElementById('timer-text').innerText = `${timeRemaining}s`; }
+        function showConfirmation() { if (confirm("Nộp bài?")) calculateResults(); }
 
-        window.startTimer = (sec) => {
-            if (timer) clearInterval(timer);
-            let time = sec;
-            const bar = document.getElementById('timer-bar'), display = document.getElementById('timer-display');
-            timer = setInterval(() => {
-                display.innerText = `${time}s`;
-                bar.style.width = (time/sec)*100 + "%";
-                if (time <= 0) { clearInterval(timer); window.nextQuestion(); }
-                time--;
-            }, 1000);
-        };
-
-        window.setMC = (i) => { userAnswers[currentIndex] = i; window.playSound('ping'); window.showQuestion(); };
-        window.setTF = (idx, val) => { if(!userAnswers[currentIndex]) userAnswers[currentIndex] = [null,null,null,null]; userAnswers[currentIndex][idx] = val; window.playSound('ping'); window.showQuestion(); };
-        window.setSA = (val) => { userAnswers[currentIndex] = val.trim(); };
-        window.prevQuestion = () => { if(currentIndex > 0) { currentIndex--; window.showQuestion(); } };
-        window.nextQuestion = () => { if(currentIndex < 19) { currentIndex++; window.showQuestion(); } else { window.finishGame(); } };
-
-        window.playSound = (t) => {
-            try { const ctx = new AudioContext(), o = ctx.createOscillator(), g = ctx.createGain(); o.connect(g); g.connect(ctx.destination); o.frequency.setValueAtTime(t==='ping'?800:440, ctx.currentTime); g.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.3); o.start(); o.stop(ctx.currentTime + 0.3); } catch(e) {}
-        };
-
-        window.finishGame = async () => {
-            clearInterval(timer);
-            const btn = document.getElementById('btn-next');
-            btn.disabled = true; btn.innerHTML = `<i class="fas fa-circle-notch fa-spin mr-2"></i> ĐANG GỬI...`;
-
-            let s1=0, s2=0, s3=0;
+        function calculateResults() {
+            clearInterval(timer); let s1 = 0, s2 = 0, s3 = 0;
             currentQuestions.forEach((q, i) => {
-                const ans = userAnswers[i];
-                if (i < 12) { if (ans === q.c) s1 += 0.25; }
-                else if (i < 16 && ans) {
-                    let c = 0; q.options.forEach((opt, idx) => { if (ans[idx] === opt.type) c++; });
-                    s2 += [0, 0.0625, 0.125, 0.25, 0.5][c];
-                } else if (i >= 16 && ans === q.ans) s3 += 0.5;
+                if (i < 12) { if (userAnswers[i] === q.correct) s1 += 0.25; }
+                else if (i < 16) { 
+                    let c = 0; q.items.forEach((it, idx) => { if (userAnswers[i] && userAnswers[i][idx] === it.correct) c++; });
+                    s2 += (c === 4 ? 0.5 : (c === 3 ? 0.25 : (c === 2 ? 0.125 : (c === 1 ? 0.0625 : 0))));
+                } else { if (userAnswers[i]?.trim() === q.ans) s3 += 0.5; }
             });
+            displayResults((s1 + s2 + s3).toFixed(1), s1, s2, s3);
+        }
 
-            const total = parseFloat((s1 + s2 + s3).toFixed(1));
-            let r = total >= 6 ? "XUẤT SẮC" : total >= 5 ? "GIỎI" : total >= 4 ? "KHÁ" : total >= 3 ? "ĐẠT" : "CHƯA ĐẠT";
+        function displayResults(total, s1, s2, s3) {
+            document.getElementById('quiz-screen').classList.add('hidden'); document.getElementById('result-screen').classList.remove('hidden');
+            document.getElementById('final-score').innerText = total;
+            const badge = document.getElementById('rank-badge');
+            if (total >= 6) { badge.innerText = "XUẤT SẮC"; badge.style.backgroundColor = "#eab308"; }
+            else if (total >= 5) { badge.innerText = "GIỎI"; badge.style.backgroundColor = "#22c55e"; }
+            else if (total >= 4) { badge.innerText = "KHÁ"; badge.style.backgroundColor = "#3b82f6"; }
+            else if (total >= 3) { badge.innerText = "ĐẠT"; badge.style.backgroundColor = "#f97316"; }
+            else { badge.innerText = "CHƯA ĐẠT"; badge.style.backgroundColor = "#ef4444"; }
 
-            document.getElementById('screen-game').classList.add('hidden');
-            document.getElementById('screen-results').classList.remove('hidden');
-            document.getElementById('screen-results').classList.add('flex');
-            
-            document.getElementById('total-score').innerText = `${total.toFixed(1)} / 7.0`;
-            document.getElementById('score-p1').innerText = s1.toFixed(2);
-            document.getElementById('score-p2').innerText = s2.toFixed(2);
-            document.getElementById('score-p3').innerText = s3.toFixed(2);
-            document.getElementById('result-rank').innerText = r;
-
-            if (userAuth) {
-                const statusBox = document.getElementById('save-status-container');
-                statusBox.classList.remove('hidden'); statusBox.classList.add('flex');
-                try {
-                    await addDoc(collection(db, 'artifacts', appId, 'public', 'data', COLLECTION_NAME), {
-                        hoTen: studentData.name, sbd: studentData.sbd, lop: studentData.class, truong: studentData.school,
-                        diemTong: total, xepLoai: r, thoiGianNop: serverTimestamp()
-                    });
-                    document.getElementById('save-status').innerHTML = "Đã đẩy dữ liệu lên Firestore thành công! ✅";
-                    document.getElementById('save-icon').className = "fas fa-check-circle text-emerald-500 animate-bounce";
-                } catch (e) { document.getElementById('save-status').innerText = "Lỗi Firestore! ❌"; }
-            }
-        };
-
-        window.showReview = () => {
-            const container = document.getElementById('review-container');
-            container.innerHTML = '<h3 class="text-3xl font-black mb-10 text-center text-slate-800 uppercase tracking-tighter">Phân tích lời giải</h3>';
-            container.classList.remove('hidden');
-
+            const review = document.getElementById('review-section'); review.innerHTML = '<h3 class="text-xl font-black mb-4 uppercase">Xem lại chi tiết</h3>';
             currentQuestions.forEach((q, i) => {
-                const ans = userAnswers[i];
-                let isC = (i < 12) ? (ans === q.c) : (i >= 16 ? (ans === q.ans) : true);
-                let html = `<div class="card p-8 border-l-[16px] ${isC ? 'border-emerald-500' : 'border-rose-500'} mb-8 text-left">
-                    <div class="font-black text-xl mb-4 text-slate-800 leading-snug">Câu ${i < 12 ? i+1 : (i < 16 ? i-11 : i-15)}: ${i < 12 ? q.q : (i < 16 ? q.lead : q.q)}</div>`;
-                if(i < 12) {
-                    html += `<div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">`;
-                    q.a.forEach((opt, idx) => {
-                        let style = (idx === q.c) ? 'bg-emerald-50 border-emerald-400 font-bold text-emerald-900' : (idx === ans ? 'bg-rose-50 border-rose-400 font-bold text-rose-900' : 'bg-slate-50 border-slate-200 opacity-60');
-                        html += `<div class="p-3 border-2 rounded-2xl text-sm ${style}">${String.fromCharCode(65+idx)}. ${opt}</div>`;
-                    });
-                    html += `</div>`;
-                } else if(i < 16) {
-                    html += `<div class="space-y-3 mb-4">`;
+                const item = document.createElement('div'); item.className = "history-item";
+                let html = `<p class="font-bold mb-3">Câu ${i+1}: ${q.q}</p>`;
+                if (i < 12) {
                     q.options.forEach((opt, idx) => {
-                        const uV = ans ? ans[idx] : null, isMatch = uV === opt.type;
-                        html += `<div class="p-2 border rounded-xl text-[10px] ${isMatch?'bg-emerald-50':'bg-rose-50'} flex justify-between font-black">
-                                    <span>${String.fromCharCode(97+idx)}. ${opt.text}</span>
-                                    <span>${uV===null?'_':(uV?'Đ':'S')} | Đ.án: ${opt.type?'Đ':'S'}</span>
-                                 </div>`;
+                        let cls = idx === q.correct ? 'correct-review' : (idx === userAnswers[i] ? 'incorrect-review' : 'review-opt');
+                        html += `<div class="${cls}"><strong>${String.fromCharCode(65+idx)}.</strong> ${opt} ${idx===q.correct?'(Đúng)':(idx===userAnswers[i]?'(Bạn chọn)': '')}</div>`;
                     });
-                    html += `</div>`;
+                } else if (i < 16) {
+                    q.items.forEach((sub, idx) => {
+                        const userVal = userAnswers[i] ? userAnswers[i][idx] : null;
+                        const isOk = userVal === sub.correct;
+                        html += `<div class="p-2 border rounded bg-white mb-2 text-sm">
+                            <p>${String.fromCharCode(97+idx)}) ${sub.text}</p>
+                            <span class="text-green-600 font-bold">Đáp án: ${sub.correct?'Đ':'S'}</span> | 
+                            <span class="${isOk?'text-blue-600':'text-red-500'} font-bold">Bạn: ${userVal===null?'_':(userVal?'Đ':'S')}</span></div>`;
+                    });
                 } else {
-                    html += `<div class="flex gap-4 mb-4"><div class="flex-1 p-5 bg-slate-50 rounded-3xl border text-xs font-black uppercase tracking-widest text-slate-400">Bạn nhập: <b class="text-slate-900 text-lg">${ans||'_'}</b></div><div class="flex-1 p-5 bg-emerald-50 rounded-3xl border border-emerald-200 text-xs font-black uppercase tracking-widest text-emerald-700">Đ.án: <b class="text-lg">${q.ans}</b></div></div>`;
+                    html += `<div class="p-3 bg-white border rounded">
+                        <p class="text-green-600 font-bold">Đáp án đúng: ${q.ans}</p>
+                        <p class="${userAnswers[i]===q.ans?'text-blue-600':'text-red-500'} font-bold">Bạn nhập: ${userAnswers[i]||"Bỏ trống"}</p></div>`;
                 }
-                html += `<div class="p-6 bg-blue-50 text-blue-900 text-sm rounded-[1.5rem] border-2 border-blue-100/50 italic font-bold"><b>Lý giải:</b> ${q.explain}</div></div>`;
-                container.innerHTML += html;
+                html += `<div class="explanation-box"><strong>💡 Giải thích:</strong> ${q.explain}</div>`;
+                item.innerHTML = html; review.appendChild(item);
             });
-            setTimeout(() => { container.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 100);
-            if (window.MathJax) MathJax.typesetPromise([container]);
-        };
+            playSound('bell'); refreshMath();
+        }
 
-        window.restartGame = () => location.reload();
-        window.showTeacherAuth = () => { document.getElementById('screen-login').classList.add('hidden'); document.getElementById('screen-teacher-auth').classList.remove('hidden'); document.getElementById('screen-teacher-auth').classList.add('flex'); };
-        window.backToStudentLogin = () => location.reload();
-        window.checkTeacherCode = () => { if (document.getElementById('secret-code').value === SECRET_CODE) { document.getElementById('screen-teacher-auth').classList.add('hidden'); document.getElementById('screen-dashboard').classList.remove('hidden'); document.getElementById('screen-dashboard').classList.add('flex'); initDashboard(); } else { alert("Sai mã!"); } };
-
-        const initDashboard = () => {
-            onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', COLLECTION_NAME), (snap) => {
-                const data = []; snap.forEach(d => data.push({ id: d.id, ...d.data() }));
-                data.sort((a,b) => (b.thoiGianNop?.toMillis()||0)-(a.thoiGianNop?.toMillis()||0));
-                const tbody = document.getElementById("table-body"); tbody.innerHTML = "";
-                data.forEach(item => {
-                    const tr = document.createElement("tr"); tr.className = "bg-white border-b hover:bg-blue-50 transition-colors";
-                    tr.innerHTML = `<td class="p-4 text-[7pt] text-slate-300 font-bold uppercase">${item.thoiGianNop?new Date(item.thoiGianNop.toMillis()).toLocaleString('vi-VN'):'--'}</td><td class="p-4 font-black text-slate-700">${item.sbd}</td><td class="p-4 font-black text-blue-900 uppercase">${item.hoTen}</td><td class="p-4 text-center font-black text-xl text-blue-600">${item.diemTong}</td><td class="p-4 text-center font-black text-[8pt] text-slate-400">${item.xepLoai}</td><td class="p-4 text-center"><button onclick="window.delRec('${item.id}')" class="text-red-400 hover:scale-125 transition-transform"><i class="fas fa-trash-alt"></i></button></td>`;
-                    tbody.appendChild(tr);
-                });
-            });
-        };
-
-        window.delRec = async (id) => { if(confirm("Xóa kết quả này?")) await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', COLLECTION_NAME, id)); };
-        window.exportCSV = () => {
-            let csv = "\uFEFFThời gian,SBD,Họ tên,Tổng điểm,Xếp loại\n";
-            Array.from(document.getElementById('table-body').rows).forEach(row => { csv += Array.from(row.cells).slice(0,5).map(c=>`"${c.innerText}"`).join(",") + "\n"; });
-            const link = document.createElement("a"); link.href = encodeURI("data:text/csv;charset=utf-8," + csv); link.download = "KetQua.csv"; link.click();
-        };
+        function shuffle(a) { for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
+        window.onload = refreshMath;
     </script>
 </body>
 </html>
